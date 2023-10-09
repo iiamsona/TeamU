@@ -14,20 +14,18 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
+  css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '@/plugins/supabase-events.js', mode: 'client' },
     { src: '@/plugins/supabase-user.js', mode: 'server' },
-    { src: '@/plugins/validator.js' }
+    { src: '@/plugins/validator.js' },
+    { src: '@/plugins/date-time-picker.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -37,18 +35,19 @@ export default {
   ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify'
-  ],
+  buildModules: ['@nuxtjs/eslint-module', '@nuxtjs/vuetify'],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     'cookie-universal-nuxt',
-    ['nuxt-supabase', {
-      supabaseUrl: 'https://aklzkpvfnihfbrnrjeff.supabase.co',
-      supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrbHprcHZmbmloZmJybnJqZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM4OTg1OTIsImV4cCI6MjAwOTQ3NDU5Mn0.AkuRztI3aS6WcDOef-Tmheghrh8M9KBmONZpvy3DiGE'
-    }]
+    [
+      'nuxt-supabase',
+      {
+        supabaseUrl: 'https://aklzkpvfnihfbrnrjeff.supabase.co',
+        supabaseKey:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrbHprcHZmbmloZmJybnJqZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM4OTg1OTIsImV4cCI6MjAwOTQ3NDU5Mn0.AkuRztI3aS6WcDOef-Tmheghrh8M9KBmONZpvy3DiGE'
+      }
+    ]
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -75,7 +74,8 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: [
-      'vee-validate' // ES5 errornery fix a anum
+      'vee-validate', // fixes ES5 errors
+      'vuetify-datetime-picker'
     ]
   }
 }

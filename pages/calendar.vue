@@ -153,7 +153,7 @@
         </v-card>
       </v-dialog>
       <div>
-        <v-btn color="primary" depressed @click="newEvent = true" class="mb-2">
+        <v-btn color="primary" depressed class="mb-2" @click="newEvent = true">
           Add new event
         </v-btn>
       </div>
@@ -172,16 +172,32 @@
                   {{ calendarType }}
                 </v-btn>
               </v-btn-toggle>
+              <div class="d-flex align-center">
+                <p class="mb-0 mr-2 grey--text text--darken-4 font-weight-bold">
+                  {{ calendarDates }}
+                </p>
+                <v-btn icon small depressed @click="$refs.calendar.prev()">
+                  <v-icon>mdi-chevron-left</v-icon>
+                </v-btn>
+                <v-btn icon small depressed @click="$refs.calendar.next()">
+                  <v-icon>mdi-chevron-right</v-icon>
+                </v-btn>
+              </div>
             </div>
-            <v-sheet height="450">
+          </v-card>
+          <v-sheet height="450">
             <v-calendar
               ref="calendar"
               v-model="value"
               :weekdays="[1, 2, 3, 4, 5, 6, 0]"
               :type="activeType"
+              color="primary"
+              :events="events"
+              event-overlap-mode="column"
+              :event-overlap-threshold="30"
+              @change="rangeChanged"
             />
           </v-sheet>
-          </v-card>
         </v-col>
         <v-col>
           <v-sheet height="540">
@@ -205,10 +221,15 @@ export default {
   data () {
     return {
       newEvent: false,
+      calendarDates: '',
+      value: '',
+      dayValue: '',
       form: {
         title: null,
         description: null,
-        color: '#BE8CFF'
+        color: '#BE8CFF',
+        start: null,
+        end: null
       },
       defaultColor: '#BE8CFF',
       eventColors: [
@@ -218,10 +239,6 @@ export default {
         ['#7B638D', '#8AC4FF'],
         ['#C15374', '#000000']
       ],
-      event: {
-        start: null,
-        end: null
-      },
       types: ['week', 'month'],
       type: 1
     }
@@ -232,6 +249,15 @@ export default {
     }
   },
   methods: {
+    rangeChanged ({ start, end }) {
+      const startDate = new Date(start.date)
+      const endDate = new Date(end.date)
+      const startYear = startDate.getFullYear()
+      const endYear = endDate.getFullYear()
+      const startMonth = startDate.getMonth() + 1 // Adding 1 because getMonth() returns a zero-based index
+      const endMonth = endDate.getMonth() + 1
+      this.calendarDates = `${startYear}-${startMonth} - ${endYear}-${endMonth}`
+    },
     async submit () {
       if (this.form.id) {
         await this.updateJob({

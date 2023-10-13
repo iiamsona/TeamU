@@ -98,7 +98,7 @@
                   tag="div"
                 >
                   <v-datetime-picker
-                    v-model="event.start"
+                    v-model="form.start"
                     :text-field-props="{ outlined: true, prependIcon: 'mdi-calendar', errorMessages: errors }"
                     :date-picker-props="{noTitle: true}"
                     label="Start time"
@@ -124,7 +124,7 @@
                   tag="div"
                 >
                   <v-datetime-picker
-                    v-model="event.end"
+                    v-model="form.end"
                     :text-field-props="{ outlined: true, errorMessages: errors }"
                     :date-picker-props="{ noTitle: true }"
                     label="End time"
@@ -192,7 +192,7 @@
               :weekdays="[1, 2, 3, 4, 5, 6, 0]"
               :type="activeType"
               color="primary"
-              :events="events"
+              :events="calendarEvents"
               event-overlap-mode="column"
               :event-overlap-threshold="30"
               @change="rangeChanged"
@@ -213,14 +213,19 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import { ValidationProvider } from 'vee-validate'
 
 export default {
   name: 'Calendar',
   components: { ValidationProvider },
+  async asyncData ({ store }) {
+    await store.dispatch('calendar/fetchEvents')
+  },
   data () {
     return {
       newEvent: false,
+      eventFormLoading: false,
       calendarDates: '',
       value: '',
       dayValue: '',
@@ -244,32 +249,37 @@ export default {
     }
   },
   computed: {
+    ...mapState('calendar', ['calendarEvents']),
+    ...mapState('user', ['user']),
     activeType () {
       return this.types[this.type]
     }
   },
   methods: {
+    ...mapActions('calendar', ['fetchEvents', 'upsertEvent', 'deleteEvent']),
     rangeChanged ({ start, end }) {
       const startDate = new Date(start.date)
       const endDate = new Date(end.date)
       const startYear = startDate.getFullYear()
       const endYear = endDate.getFullYear()
-      const startMonth = startDate.getMonth() + 1 // Adding 1 because getMonth() returns a zero-based index
+      const startMonth = startDate.getMonth() + 1 // Adding 1 cuz getMonth() returns a zero-based index
       const endMonth = endDate.getMonth() + 1
       this.calendarDates = `${startYear}-${startMonth} - ${endYear}-${endMonth}`
     },
     async submit () {
-      if (this.form.id) {
-        await this.updateJob({
-          name: this.form.title,
-          description: this.form.description,
-          id: this.form.id
-        })
-      } else {
-        this.form.user_id = this.user.id
-        await this.createEvent(this.form)
+      this.eventFormLoading = true
+
+      if (!this.eventForm.user_id) {
+        this.eventForm.user_id = this.user.id
       }
-      this.dialog = false
+
+      try {
+        await this.upsertEvent(this.form)
+      } catch {
+        console.log('ok')
+      } finally {
+        this.eventFormLoading = false
+      }
     }
   }
 }

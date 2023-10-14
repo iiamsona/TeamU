@@ -2,72 +2,74 @@
   <section>
     <v-row>
       <v-dialog v-model="newEvent" max-width="500">
-
         <v-card rounded="lg">
-
           <v-card-title class="mb-4">
             <span class="text-h5">New event</span>
           </v-card-title>
 
           <v-card-text>
-
             <validation-observer v-slot="{ handleSubmit }" ref="observer" slim>
-
               <v-form @submit.prevent="handleSubmit(submit)">
-              <!-- color btn -->
-                <validation-provider>
-                  <template>
-                    <v-menu rounded="lg" offset-y>
-                      <template #activator="{ attrs, on }">
-                        <v-sheet
-                          rounded="circle"
-                          width="22"
-                          height="22"
-                          :color="form.color ?? defaultColor"
-                          v-bind="attrs"
-                          v-on="on"
-                        />
-                      </template>
-                      <v-list>
-                        <v-list-item v-for="(eColors, index) in eventColors" :key="index" class="px-2">
-                          <v-btn
-                            v-for="(eColor, cIndex) in eColors"
-                            :key="cIndex"
-                            class="d-flex item-center justify-content-center"
-                            icon
-                            x-small
-                            @click="form.color = eColor"
-                          >
+                <v-row>
+                  <v-col md="1">
+                    <!-- color btn -->
+                    <validation-provider>
+                      <template>
+                        <v-menu rounded="lg" offset-y>
+                          <template #activator="{ attrs, on }">
                             <v-sheet
-                              width="20"
-                              height="20"
-                              :color="eColor"
                               rounded="circle"
-                              :class="{ 'ml-1': cIndex, 'mr-1': !cIndex }"
-                              class="d-flex item-center justify-content-center"
+                              width="22"
+                              height="22"
+                              :color="form.color ?? defaultColor"
+                              v-bind="attrs"
+                              v-on="on"
                             />
-                          </v-btn>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </template>
-                </validation-provider>
-                <!-- title input -->
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="title"
-                  rules="required|max:255"
-                  class="mb-2"
-                  tag="div"
-                >
-                  <v-text-field
-                    v-model="form.title"
-                    outlined
-                    :counter="255"
-                    :error-messages="errors"
-                    label="Title"
-                  />
-                </validation-provider>
+                          </template>
+                          <v-list>
+                            <v-list-item v-for="(eColors, index) in eventColors" :key="index" class="px-2">
+                              <v-btn
+                                v-for="(eColor, cIndex) in eColors"
+                                :key="cIndex"
+                                class="d-flex item-center justify-content-center"
+                                icon
+                                x-small
+                                @click="form.color = eColor"
+                              >
+                                <v-sheet
+                                  width="20"
+                                  height="20"
+                                  :color="eColor"
+                                  rounded="circle"
+                                  :class="{ 'ml-1': cIndex, 'mr-1': !cIndex }"
+                                  class="d-flex item-center justify-content-center"
+                                />
+                              </v-btn>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                      </template>
+                    </validation-provider>
+                  </v-col>
+                  <v-col>
+                    <!-- title input -->
+                    <validation-provider
+                      v-slot="{ errors }"
+                      name="title"
+                      rules="required|max:255"
+                      class="mb-2"
+                      tag="div"
+                    >
+                      <v-text-field
+                        v-model="form.title"
+                        outlined
+                        :counter="255"
+                        :error-messages="errors"
+                        label="Title"
+                      />
+                    </validation-provider>
+                  </v-col>
+                </v-row>
                 <!-- description input -->
                 <validation-provider
                   v-slot="{ errors }"
@@ -147,15 +149,15 @@
                 </v-row>
                 <!-- form btns -->
                 <div class="text-right mt-4">
-                <v-btn depressed @click="newEvent = false">
-                  Close
-                </v-btn>
-                <v-btn color="primary" depressed type="submit">
-                  Save
-                </v-btn>
-              </div>
-            </v-form>
-          </validation-observer>
+                  <v-btn depressed @click="newEvent = false">
+                    Close
+                  </v-btn>
+                  <v-btn color="primary" depressed type="submit">
+                    Save
+                  </v-btn>
+                </div>
+              </v-form>
+            </validation-observer>
           </v-card-text>
         </v-card>
       </v-dialog>

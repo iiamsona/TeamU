@@ -268,14 +268,21 @@ export default {
   },
   methods: {
     ...mapActions('events', ['fetchEvents', 'upsertEvent', 'deleteEvent']),
-    rangeChanged ({ start, end }) {
-      const startDate = new Date(start.date)
-      const endDate = new Date(end.date)
-      const startYear = startDate.getFullYear()
-      const endYear = endDate.getFullYear()
-      const startMonth = startDate.getMonth() + 1 // Adding 1 cuz getMonth() returns a zero-based index
-      const endMonth = endDate.getMonth() + 1
-      this.calendarDates = `${startYear}-${startMonth} - ${endYear}-${endMonth}`
+    rangeChanged ({ start }) {
+      const date = new Date(start.date)
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1 // Adding 1 cuz getMonth() returns a zero-based index
+      this.calendarDates = `${year}-${month}`
+    },
+    restForm () {
+      this.newEvent = false
+      this.form = {
+        name: null,
+        description: null,
+        color: '#BE8CFF',
+        start: null,
+        end: null
+      }
     },
     async submit () {
       this.eventFormLoading = true
@@ -284,8 +291,12 @@ export default {
       }
       try {
         await this.upsertEvent(this.form)
+        this.restForm()
+        this.toggleSnackbar('Success',
+          !this.eventForm.id ? 'The event has been created successfully!' : 'The event has been updated successfully!'
+        )
       } catch (error) {
-        console.log('error')
+        this.toggleSnackbar('Error', 'Something went wrong, please try later!', 'red accent-2')
       } finally {
         this.eventFormLoading = false
       }

@@ -19,12 +19,13 @@
                   tag="div"
                 >
                   <v-text-field
-                    v-model="form.title"
+                    v-model="form.name"
                     outlined
                     :counter="255"
                     :error-messages="errors"
                     label="Title"
                   >
+                  <!-- color picker -->
                     <template #prepend>
                       <v-menu rounded="lg" offset-y>
                         <template #activator="{ attrs, on }">
@@ -237,7 +238,7 @@ export default {
       value: '',
       dayValue: '',
       form: {
-        title: null,
+        name: null,
         description: null,
         color: '#BE8CFF',
         start: null,

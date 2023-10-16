@@ -10,66 +10,58 @@
           <v-card-text>
             <validation-observer v-slot="{ handleSubmit }" ref="observer" slim>
               <v-form @submit.prevent="handleSubmit(submit)">
-                <v-row>
-                  <v-col md="1">
-                    <!-- color btn -->
-                    <validation-provider>
-                      <template>
-                        <v-menu rounded="lg" offset-y>
-                          <template #activator="{ attrs, on }">
-                            <v-sheet
-                              rounded="circle"
-                              width="22"
-                              height="22"
-                              :color="form.color ?? defaultColor"
-                              v-bind="attrs"
-                              v-on="on"
-                            />
-                          </template>
-                          <v-list>
-                            <v-list-item v-for="(eColors, index) in eventColors" :key="index" class="px-2">
-                              <v-btn
-                                v-for="(eColor, cIndex) in eColors"
-                                :key="cIndex"
+                <!-- title input -->
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="title"
+                  rules="required|max:255"
+                  class="mb-2"
+                  tag="div"
+                >
+                  <v-text-field
+                    v-model="form.title"
+                    outlined
+                    :counter="255"
+                    :error-messages="errors"
+                    label="Title"
+                  >
+                    <template #prepend>
+                      <v-menu rounded="lg" offset-y>
+                        <template #activator="{ attrs, on }">
+                          <v-sheet
+                            rounded="circle"
+                            width="22"
+                            height="22"
+                            :color="form.color ?? defaultColor"
+                            v-bind="attrs"
+                            v-on="on"
+                          />
+                        </template>
+                        <v-list>
+                          <v-list-item v-for="(eColors, index) in eventColors" :key="index" class="px-2">
+                            <v-btn
+                              v-for="(eColor, cIndex) in eColors"
+                              :key="cIndex"
+                              class="d-flex item-center justify-content-center"
+                              icon
+                              x-small
+                              @click="form.color = eColor"
+                            >
+                              <v-sheet
+                                width="20"
+                                height="20"
+                                :color="eColor"
+                                rounded="circle"
+                                :class="{ 'ml-1': cIndex, 'mr-1': !cIndex }"
                                 class="d-flex item-center justify-content-center"
-                                icon
-                                x-small
-                                @click="form.color = eColor"
-                              >
-                                <v-sheet
-                                  width="20"
-                                  height="20"
-                                  :color="eColor"
-                                  rounded="circle"
-                                  :class="{ 'ml-1': cIndex, 'mr-1': !cIndex }"
-                                  class="d-flex item-center justify-content-center"
-                                />
-                              </v-btn>
-                            </v-list-item>
-                          </v-list>
-                        </v-menu>
-                      </template>
-                    </validation-provider>
-                  </v-col>
-                  <v-col>
-                    <!-- title input -->
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="title"
-                      rules="required|max:255"
-                      class="mb-2"
-                      tag="div"
-                    >
-                      <v-text-field
-                        v-model="form.title"
-                        outlined
-                        :counter="255"
-                        :error-messages="errors"
-                        label="Title"
-                      />
-                    </validation-provider>
-                  </v-col>
-                </v-row>
+                              />
+                            </v-btn>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
+                    </template>
+                  </v-text-field>
+                </validation-provider>
                 <!-- description input -->
                 <validation-provider
                   v-slot="{ errors }"
@@ -291,13 +283,8 @@ export default {
       }
       try {
         await this.upsertEvent(this.form)
-        this.resetForm()
-        this.toggleSnackbar(
-          'Success',
-          !this.form.id ? 'The event has been created successfully!' : 'The event has been updated successfully!'
-        )
       } catch (error) {
-        this.toggleSnackbar('Error', 'Something went wrong, please try later!', 'red accent-2')
+        console.log('error')
       } finally {
         this.eventFormLoading = false
       }

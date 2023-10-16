@@ -119,7 +119,11 @@ export default {
           password: this.form.password
         })
 
-        const { data, error } = await this.$supabase.from('profiles').select('*').eq('id', response.user.id).limit(1)
+        if (response.error) {
+          return this.toggleSnackbar('Error', response.error.message, 'red accent-2')
+        }
+
+        const { data, error } = await this.$supabase.from('profiles').select('*').eq('id', response?.user?.id).limit(1)
 
         if (!response.error && !error) {
           this.$store.commit('user/setUser', response.user)

@@ -25,7 +25,7 @@
                     :error-messages="errors"
                     label="Title"
                   >
-                  <!-- color picker -->
+                    <!-- color picker -->
                     <template #prepend>
                       <v-menu rounded="lg" offset-y>
                         <template #activator="{ attrs, on }">
@@ -199,6 +199,7 @@
               event-overlap-mode="column"
               :event-overlap-threshold="30"
               @change="rangeChanged"
+              @click:event="oldDialog"
             />
           </v-sheet>
         </v-col>
@@ -284,6 +285,9 @@ export default {
         end: null
       }
     },
+    oldDialog () {
+      this.newEvent = true
+    },
     async submit () {
       this.eventFormLoading = true
       if (!this.form.user_id) {
@@ -293,7 +297,7 @@ export default {
         await this.upsertEvent(this.form)
         this.restForm()
         this.toggleSnackbar('Success',
-          !this.eventForm.id ? 'The event has been created successfully!' : 'The event has been updated successfully!'
+          !this.form.id ? 'The event has been created successfully!' : 'The event has been updated successfully!'
         )
       } catch (error) {
         this.toggleSnackbar('Error', 'Something went wrong, please try later!', 'red accent-2')

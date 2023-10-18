@@ -222,6 +222,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { ValidationProvider } from 'vee-validate'
+import { cloneDeep } from 'lodash'
 import snackbar from '@/mixins/snackbar'
 
 export default {
@@ -285,8 +286,9 @@ export default {
         end: null
       }
     },
-    oldDialog () {
+    oldDialog (events) {
       this.newEvent = true
+      this.form = cloneDeep(events.event)
     },
     async submit () {
       this.eventFormLoading = true

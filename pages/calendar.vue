@@ -142,9 +142,12 @@
                 </v-row>
                 <!-- form btns -->
                 <div class="text-right mt-4">
-                  <v-btn depressed @click="newEvent = false">
+                  <v-btn v-if="form.name === null" depressed @click="newEvent = false">
                     Close
                   </v-btn>
+                  <v-btn v-else depressed @click="newEvent = false" color="error">
+                      Delete
+                    </v-btn>
                   <v-btn color="primary" depressed type="submit">
                     Save
                   </v-btn>
@@ -277,7 +280,7 @@ export default {
       this.calendarDates = `${year}-${month}`
     },
     restForm () {
-      this.newEvent = false
+      console.log('ok')
       this.form = {
         name: null,
         description: null,
@@ -287,8 +290,9 @@ export default {
       }
     },
     oldDialog (events) {
-      this.newEvent = true
+      this.restForm()
       this.form = cloneDeep(events.event)
+      this.newEvent = true
     },
     async submit () {
       this.eventFormLoading = true

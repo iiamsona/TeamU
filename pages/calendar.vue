@@ -1,7 +1,7 @@
 <template>
   <section>
     <v-row>
-      <v-dialog v-model="newEvent" max-width="500">
+      <v-dialog v-model="dialog" max-width="500">
         <v-card rounded="lg">
           <v-card-title class="mb-4">
             <span class="text-h5">New event</span>
@@ -142,12 +142,12 @@
                 </v-row>
                 <!-- form btns -->
                 <div class="text-right mt-4">
-                  <v-btn v-if="form.name === null" depressed @click="newEvent = false">
+                  <v-btn v-if="form.name === null" depressed @click="dialog = false">
                     Close
                   </v-btn>
-                  <v-btn v-else depressed @click="newEvent = false" color="error">
-                      Delete
-                    </v-btn>
+                  <v-btn v-else depressed color="error" @click="openDeleteConfirmation">
+                    Delete
+                  </v-btn>
                   <v-btn color="primary" depressed type="submit">
                     Save
                   </v-btn>
@@ -157,12 +157,38 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-
+      <!-- add new event btn -->
       <div>
-        <v-btn color="primary" depressed class="mb-2" @click="newEvent = true">
+        <v-btn color="primary" depressed class="mb-2" @click="dialog = true">
           Add new event
         </v-btn>
       </div>
+      <!-- delete dialog -->
+       <v-dialog
+        v-model="dialogConfirmaition"
+        max-width="450"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            Event Remove
+          </v-card-title>
+
+          <v-card-text>
+            Are you sure that you want to remove the event, you can't revert this action?
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn text @click="dialogConfirmaition = false">
+              Close
+            </v-btn>
+
+            <v-btn color="red darken-3" text @click="deleteItem">
+              Delete
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- calendars -->
     </v-row>
     <v-row>
       <v-row>
@@ -202,7 +228,7 @@
               event-overlap-mode="column"
               :event-overlap-threshold="30"
               @change="rangeChanged"
-              @click:event="oldDialog"
+              @click:event="openEditModal"
             />
           </v-sheet>
         </v-col>
@@ -237,11 +263,13 @@ export default {
   },
   data () {
     return {
-      newEvent: false,
+      dialog: false,
       eventFormLoading: false,
+      dialogConfirmaition: false,
       calendarDates: '',
       value: '',
       dayValue: '',
+      removableId: null,
       form: {
         name: null,
         description: null,
@@ -264,6 +292,25 @@ export default {
   async fetch () {
     await this.fetchEvents()
   },
+  watch: {
+    dialogConfirmaition (newValue) {
+      if (!newValue) {
+        this.removableId = null
+      }
+    },
+    dialog (newValue) {
+      if (!newValue) {
+        this.$refs.observer.reset()
+        this.form = {
+          name: null,
+          description: null,
+          color: '#BE8CFF',
+          start: null,
+          end: null
+        }
+      }
+    }
+  },
   computed: {
     ...mapState('events', ['events']),
     ...mapState('user', ['user']),
@@ -279,20 +326,18 @@ export default {
       const month = date.getMonth() + 1 // Adding 1 cuz getMonth() returns a zero-based index
       this.calendarDates = `${year}-${month}`
     },
-    restForm () {
-      console.log('ok')
-      this.form = {
-        name: null,
-        description: null,
-        color: '#BE8CFF',
-        start: null,
-        end: null
-      }
+    async deleteItem () {
+      await this.deleteEvent(this.removableId)
+      this.dialogConfirmaition = false
+      this.dialog = false
     },
-    oldDialog (events) {
-      this.restForm()
+    openDeleteConfirmation () {
+      this.removableId = this.form.id
+      this.dialogConfirmaition = true
+    },
+    openEditModal (events) {
       this.form = cloneDeep(events.event)
-      this.newEvent = true
+      this.dialog = true
     },
     async submit () {
       this.eventFormLoading = true
@@ -300,15 +345,21 @@ export default {
         this.form.user_id = this.user.id
       }
       try {
-        await this.upsertEvent(this.form)
-        this.restForm()
+        await this.upsertEvent({
+          name: this.form.name,
+          description: this.form.description,
+          color: this.form.color,
+          start: this.form.start,
+          end: this.form.end
+        })
+        console.log(this.name)
         this.toggleSnackbar('Success',
           !this.form.id ? 'The event has been created successfully!' : 'The event has been updated successfully!'
         )
       } catch (error) {
         this.toggleSnackbar('Error', 'Something went wrong, please try later!', 'red accent-2')
       } finally {
-        this.eventFormLoading = false
+        this.dialog = false
       }
     }
   }

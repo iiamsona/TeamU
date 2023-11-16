@@ -1,0 +1,14 @@
+{
+  "NavDashboardAside": {
+    "description": "Auto imported from components/navigation/DashboardAside.vue"
+  },
+  "NavDashboardHeader": {
+    "description": "Auto imported from components/navigation/DashboardHeader.vue"
+  },
+  "NavDashboardSubHeader": {
+    "description": "Auto imported from components/navigation/DashboardSubHeader.vue"
+  },
+  "GeneralSnackBar": {
+    "description": "Auto imported from components/general/SnackBar.vue"
+  }
+}

@@ -1,0 +1,51 @@
+[
+  {
+    "name": "calendar",
+    "path": "/calendar",
+    "component": "/home/sona/Desktop/Project-teamU/pages/calendar.vue",
+    "chunkName": "pages/calendar",
+    "_name": "_1005d3a8"
+  },
+  {
+    "name": "jobs",
+    "path": "/jobs",
+    "component": "/home/sona/Desktop/Project-teamU/pages/jobs.vue",
+    "chunkName": "pages/jobs",
+    "_name": "_a4bcbc80"
+  },
+  {
+    "name": "profile",
+    "path": "/profile",
+    "component": "/home/sona/Desktop/Project-teamU/pages/profile.vue",
+    "chunkName": "pages/profile",
+    "_name": "_668f68af"
+  },
+  {
+    "name": "signin",
+    "path": "/signin",
+    "component": "/home/sona/Desktop/Project-teamU/pages/signin.vue",
+    "chunkName": "pages/signin",
+    "_name": "_4bbe828c"
+  },
+  {
+    "name": "signup",
+    "path": "/signup",
+    "component": "/home/sona/Desktop/Project-teamU/pages/signup.vue",
+    "chunkName": "pages/signup",
+    "_name": "_6054d902"
+  },
+  {
+    "name": "Schedules-shifts",
+    "path": "/Schedules/shifts",
+    "component": "/home/sona/Desktop/Project-teamU/pages/Schedules/shifts.vue",
+    "chunkName": "pages/Schedules/shifts",
+    "_name": "_5583df24"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/home/sona/Desktop/Project-teamU/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_6047aed8"
+  }
+]
